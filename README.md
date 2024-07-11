@@ -8,7 +8,7 @@
 
 ### Google Colaboratoryで実行する方法（推奨）
 
-1. リンククリックで[ノートブック](https://colab.research.google.com/github/A-tilol/atcoder-shojin-chart/blob/main/chart.ipynb)をColabで開く
+1. リンクをクリックして[ノートブック](https://colab.research.google.com/github/A-tilol/atcoder-shojin-chart/blob/main/chart.ipynb)をColabで開く
 2. 右上の「接続」ボタンを押し、インスタンスを起動する
 3. ノートブックに書かれている説明にしたがって実行する
 
