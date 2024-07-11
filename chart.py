@@ -7,7 +7,7 @@ import requests
 
 from logger import get_logger
 
-log = get_logger(__name__, level=10)
+log = get_logger(__name__, level=20)
 
 SUB_API_URL = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user={}&from_second={}"
 MAX_SUB = 500
@@ -15,15 +15,14 @@ MAX_SUB = 500
 
 def get_user_submissions(user: str, epoch: int) -> dict:
     res = requests.get(SUB_API_URL.format(user, epoch))
-    log.debug(SUB_API_URL.format(user, epoch))
+    log.info(SUB_API_URL.format(user, epoch))
     subs = json.loads(res.text)
     if len(subs) < MAX_SUB:
         return subs
 
     time.sleep(1)
-    epochs = [sub["epoch_second"] for sub in subs]
-    epochs.sort()
-    return subs + get_user_submissions(user, epochs[-1])
+    max_epoch = max([sub["epoch_second"] for sub in subs])
+    return subs + get_user_submissions(user, max_epoch)
 
 
 def retrieve_unique_AC_subs(user: str, period: int):
@@ -33,6 +32,9 @@ def retrieve_unique_AC_subs(user: str, period: int):
 
     # exclude AHC
     subs = [sub for sub in subs if not sub["contest_id"].lower().startswith("ahc")]
+    subs = [
+        sub for sub in subs if 0 <= sub["point"] <= 3000
+    ]  # ヒューリスティックコンのリストでチェックするのが面倒なため3000点超えてたら除外
     log.debug(f"Algo subs {len(subs)}")
 
     # extract AC subs
@@ -55,7 +57,7 @@ def retrieve_unique_AC_subs(user: str, period: int):
             continue
         unique_ac_subs.append(sub)
         unique_keys.add(sub["problem_id"])
-    log.debug(f"Unique AC subs {len(unique_ac_subs)}")
+    log.info(f"Unique AC subs {len(unique_ac_subs)}")
 
     return unique_ac_subs
 
@@ -147,7 +149,7 @@ def draw_chart(users: list, period: int, kind="獲得スコア"):
 
     # set x axis date format
     fig.update_xaxes(
-        dtick="M1",
+        dtick="M1" if period < 700 else "M6",
         tickformat="%Y-%m",
         tickangle=-45,
     )
@@ -173,11 +175,8 @@ def draw_chart(users: list, period: int, kind="獲得スコア"):
 
 
 if __name__ == "__main__":
-    # USERS = ["gigolo"]
-    USERS = ["gigolo", "ktsn_ud"]
-    # USERS = ["gigolo", "ktsn_ud", "merudo", "Astroseek"]
-    DAY_PERIOD = 90
-    kind = "AC数"
+    users = ["chokudai", "tourist", "snuke"]
+    day_period = 5000
+    kind = "獲得スコア"  # 獲得スコア or AC数
 
-    # draw_chart(USERS, DAY_PERIOD, kind="AC数")
-    draw_chart(USERS, DAY_PERIOD, kind)
+    draw_chart(users, day_period, kind)
