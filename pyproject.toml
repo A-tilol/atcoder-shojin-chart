@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "atcoder-raivals-chart"
+name = "atcoder-shojin-chart"
 version = "0.1.0"
 description = ""
 authors = ["atilol <ggrkssk@gmail.com>"]
@@ -13,6 +13,9 @@ matplotlib = "^3.9.1"
 notebook = "^7.2.1"
 japanize-matplotlib = "^1.1.3"
 plotly = "^5.22.0"
+dash = "^2.17.1"
+pandas = "^2.2.2"
+dash-bootstrap-components = "^1.6.0"
 
 
 [build-system]
